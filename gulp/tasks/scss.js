@@ -1,17 +1,22 @@
 import dartSaas from 'sass';
 import gulpSaas from 'gulp-sass';
 import rename from 'gulp-rename';
-
 import cleanCss from 'gulp-clean-css'; // Compression CSS file
 import autoprefixer from 'gulp-autoprefixer'; // Adding vendor prefixes
-import groupCssMediaQueries from 'gulp-group-css-media-queries'; // Grouping Media Queries
+import groupCssMediaQueries from 'gulp-group-css-media-queries';
 
 const sass = gulpSaas(dartSaas);
 
 export const scss = () => {
     return app.gulp.src(app.path.src.scss, { sourcemaps: app.isDev })
+        .pipe(app.plugins.plumber(
+            app.plugins.notify.onError({
+                title: "SCSS",
+                message: "Error: <%= error.message %>"
+            })
+        ))
         .pipe(app.plugins.if(
-            app.settings.pathAutocompleteVSCode,
+            app.settings.html.pathAutocompleteVSCode,
             app.plugins.replace(/@img\//g, 'img/')
         ))
         .pipe(sass({
